@@ -4,6 +4,7 @@
 """
 mainSpotifyEPD.py -> Alex Scott 6/2020
 single_user mode -> Ivan Chacon 12/2020
+customized -> Evan Slack 2/2021
 
 Made for the Waveshare 4.2inch e-Paper Module
 https://www.waveshare.com/wiki/4.2inch_e-Paper_Module
@@ -39,10 +40,10 @@ from PIL import Image, ImageFont, ImageDraw, ImageMath
 # EPD Settings just for you! --------------------------------------------------------------------------------
 single_user = False        # (True -> Left side album art False -> two user mode)
 metric_units = False       # (True -> C°, False -> F°)
-twenty_four_clock = False  # (True -> 10:53pm, False -> 22:53)
+twenty_four_clock = True  # (True -> 10:53pm, False -> 22:53)
 partial_updates = True     # (True -> 1/60HZ Screen_Update, False -> 1/180HZ Screen_Update)
 time_on_right = True       # (True -> time is displayed on the right, False -> time is displayed on the left)
-hide_other_weather = False # (True -> weather not shown in top right, False -> weather is shown in top right)
+hide_other_weather = True # (True -> weather not shown in top right, False -> weather is shown in top right)
 sunset_flip = True         # (True -> darkmode 24m after main sunset, False -> Light mode 24/7)
 # -----------------------------------------------------------------------------------------------------------
 
@@ -52,16 +53,16 @@ spot_scope = "user-read-private, user-read-recently-played, user-read-playback-s
 redirect_uri = 'http://www.google.com/'
 
 # if single_user is True, Left Spotify info is never shown
-l_spot_client_id = ''
-l_spot_client_secret = ''
+l_spot_client_id = '8a87a016bb144e78a7d558c03d13f0f3'
+l_spot_client_secret = 'ba69eb394e7045f38ad763038a3a28c5'
 l_cache = '.leftauthcache'
-l_name = '' # drawn at the top of the screen
+l_name = 'Evan' # drawn at the top of the screen
 
 # Right Spotify
-r_spot_client_id = ''
-r_spot_client_secret = ''
+r_spot_client_id = '8a87a016bb144e78a7d558c03d13f0f3'
+r_spot_client_secret = 'ba69eb394e7045f38ad763038a3a28c5'
 r_cache = '.rightauthcache'
-r_name = '' # drawn at the top of the screen
+r_name = 'Anika' # drawn at the top of the screen
 
 WIDTH, HEIGHT = 400, 300
 
@@ -456,8 +457,9 @@ def get_weather(metric_units, hide_other_weather):
             https://en.wikipedia.org/wiki/Metric_Conversion_Act
             https://www.geographyrealm.com/the-only-metric-highway-in-the-united-states/
     """
-    OW_KEY = ""  # https://openweathermap.org/ -> create account and generate key
-    OW_CITYID = ""  # https://openweathermap.org/find? -> find your city id
+    OW_KEY = "124a5aa8374ab1b0e3961bbf1e165c60"
+"  # https://openweathermap.org/ -> create account and generate key
+    OW_CITYID = "4930956"  # https://openweathermap.org/find? -> find your city id
     OW_OTHER_CITYID = ""
     URL_UNITS = "&units=metric" if metric_units else "&units=imperial" 
 
@@ -1134,9 +1136,9 @@ if __name__ == '__main__':
         drawSpotContext(draw, Himage, r_ctx_type, r_ctx_title, 227, 204)
 
         # NAMES ----------------------------------------------------------------
-        l_name_width, l_name_height = drawName(draw, "Batman", 8, 0)
+        l_name_width, l_name_height = drawName(draw, "Evan", 8, 0)
         drawUserTimeAgo(draw, l_time_since, 18 + l_name_width, l_name_height // 2)
-        r_name_width, r_name_height = drawName(draw, "Robin", 210, 0)
+        r_name_width, r_name_height = drawName(draw, "Anika", 210, 0)
         drawUserTimeAgo(draw, r_time_since, 220 + r_name_width, r_name_height // 2) 
 
         # HIDDEN DARK MODE 
