@@ -4,25 +4,18 @@
 """
 mainSpotifyEPD.py -> Alex Scott 6/2020
 single_user mode -> Ivan Chacon 12/2020
-customized -> Evan Slack 2/2021
-
 Made for the Waveshare 4.2inch e-Paper Module
 https://www.waveshare.com/wiki/4.2inch_e-Paper_Module
-
 This program finds the last thing two people listened to on Spotify, and
 displays the track title, artist name, and context.
-
 In addition, this program uses the OpenWeatherMap api to retrieve and
 display the current 'feels-like' temperature, along with the date and time
-
 6:00am - 11:59pm the display updates every 3 minutes
 12:00pm - 2:00am the display updates every 15 minutes
 2:00am - 6:00am the display does not update
 This is all in an effort to ensure the display does not see long term damage
-
 A preview of the end result can be found here:
 https://raw.githubusercontent.com/alexthescott/4.2in-ePaper-Spotify-Clock/master/spotify_epaper_preview.jpg
-
 This program is intended to be used along with a bash script which re-launches
 the program in the event of a crash. That bash script can be found here:
 https://github.com/alexthescott/4.2in-ePaper-Spotify-Clock/blob/master/launch_epaper.sh
@@ -38,9 +31,9 @@ from waveshare_epd import epd4in2
 from PIL import Image, ImageFont, ImageDraw, ImageMath
 
 # EPD Settings just for you! --------------------------------------------------------------------------------
-single_user = False        # (True -> Left side album art False -> two user mode)
+single_user = True        # (True -> Left side album art False -> two user mode)
 metric_units = False       # (True -> C°, False -> F°)
-twenty_four_clock = True  # (True -> 10:53pm, False -> 22:53)
+twenty_four_clock = False  # (True -> 10:53pm, False -> 22:53)
 partial_updates = True     # (True -> 1/60HZ Screen_Update, False -> 1/180HZ Screen_Update)
 time_on_right = True       # (True -> time is displayed on the right, False -> time is displayed on the left)
 hide_other_weather = True # (True -> weather not shown in top right, False -> weather is shown in top right)
@@ -58,14 +51,16 @@ l_spot_client_secret = 'ba69eb394e7045f38ad763038a3a28c5'
 l_cache = '.leftauthcache'
 l_name = 'Evan' # drawn at the top of the screen
 
-# Right Spotify
-r_spot_client_id = '8a87a016bb144e78a7d558c03d13f0f3'
-r_spot_client_secret = 'ba69eb394e7045f38ad763038a3a28c5'
+# Right Spotify`
+#r_spot_client_id = '8a87a016bb144e78a7d558c03d13f0f3'
+#r_spot_client_secret = 'ba69eb394e7045f38ad763038a3a28c5'
+r_spot_client_id = '3580f2cafb524436a3c2b7b6fe3ac62d'
+r_spot_client_secret = '06775b35242447b193a100d77c31d857'
 r_cache = '.rightauthcache'
 r_name = 'Anika' # drawn at the top of the screen
 
 WIDTH, HEIGHT = 400, 300
-
+ 
 def main_loop():
     """ Our main_loop enters a while loop, updating the EPD every 3 mins using spotify, weather, and dt information. """
 
@@ -293,7 +288,6 @@ def get_spotipy(sp_oauth, token_info):
 
 def get_spotipy_info(token, single_user):
     """ Return Spotify Listening Information from Spotify AUTH Token.
-
         Parameters:
             token: Spotify Auth Token generated from OAuth object
         Return:
@@ -348,7 +342,6 @@ def get_spotipy_info(token, single_user):
 
 def get_context_from_json(context_json, spotipy_object):
     """ Return Spotify Context info.
-
         Parameters:
             context_json: json to be parsed
             spotipy_object: used to retreive name of spotify context
@@ -375,7 +368,6 @@ def get_context_from_json(context_json, spotipy_object):
 # Time Functions
 def get_time_from_date_time(time_elapsed, old_min, twenty_four_clock):
     """ Return time information from datetime including seconds, time, date, and the current_minute of update.
-
         Parameters:
             time_elapsed: 'jump us forward in time to anticipate compute time'
             old_min: used to ensure a proper update interval
@@ -421,7 +413,6 @@ def get_time_from_timedelta(td):
 
 def get_time_since_played(hours, minutes):
     """ Get str representation of time since last played.
-
         Parameters:
             hours: int counting hours since last played
             minutes: int counting minutes since last played
@@ -451,14 +442,12 @@ def get_weather(metric_units, hide_other_weather):
             temp_max: Low temp 1.5 days in the future
             temp_min: High temp 1.5 days in the future
             other_temp: Temp to be displayed in top right of other user (another city perhaps?)
-
         Fun Fact:
             America is a strange country with broken proclamations
             https://en.wikipedia.org/wiki/Metric_Conversion_Act
             https://www.geographyrealm.com/the-only-metric-highway-in-the-united-states/
     """
-    OW_KEY = "124a5aa8374ab1b0e3961bbf1e165c60"
-"  # https://openweathermap.org/ -> create account and generate key
+    OW_KEY = "124a5aa8374ab1b0e3961bbf1e165c60"  # https://openweathermap.org/ -> create account and generate key
     OW_CITYID = "4930956"  # https://openweathermap.org/find? -> find your city id
     OW_OTHER_CITYID = ""
     URL_UNITS = "&units=metric" if metric_units else "&units=imperial" 
@@ -532,10 +521,8 @@ def resize_image(imageName):
 class DrawToEPD():
     """ DrawToEPD by Alex Scott 2021
     Companion functions for mainSpotifyEPD.py
-
     Functions here rely on PIL to draw to an existing draw object
     Draw context, date time temp, artist and track info, time since, and names
-
     Made for the Waveshare 4.2inch e-Paper Module
     https://www.waveshare.com/wiki/4.2inch_e-Paper_Module
     """
@@ -642,7 +629,6 @@ class DrawToEPD():
     # ---- FORMATTING FUNCs
     def get_text_width(self, text, size):
         """ Return an int representing the size of a word
-
             Requires three dictionaries, defining the width of each char
             for our given font, Nintendo-DS-BIOS.ttf
         """
@@ -656,7 +642,6 @@ class DrawToEPD():
 
     def format_x_word(self, text_size_list, text_list, size):
         """ Return a list of 'squished' words to fit exact width dimensions
-
             Parameters:
                 text_size_list: a list of ints representing the width of each word
                 text_list: a list of strs to be combined as to print neater words
@@ -699,7 +684,6 @@ class DrawToEPD():
 
     def hyphenate_words(self, word, size):
         """ Return a list of 'spliced' word segments to fit exact width dimensions
-
             Parameters:
                 word: our string to hyphenate
                 size: {0, 1, 2} to denote DS font sizes {16, 32, 64}
@@ -1136,9 +1120,9 @@ if __name__ == '__main__':
         drawSpotContext(draw, Himage, r_ctx_type, r_ctx_title, 227, 204)
 
         # NAMES ----------------------------------------------------------------
-        l_name_width, l_name_height = drawName(draw, "Evan", 8, 0)
+        l_name_width, l_name_height = drawName(draw, "Batman", 8, 0)
         drawUserTimeAgo(draw, l_time_since, 18 + l_name_width, l_name_height // 2)
-        r_name_width, r_name_height = drawName(draw, "Anika", 210, 0)
+        r_name_width, r_name_height = drawName(draw, "Robin", 210, 0)
         drawUserTimeAgo(draw, r_time_since, 220 + r_name_width, r_name_height // 2) 
 
         # HIDDEN DARK MODE 
@@ -1148,6 +1132,5 @@ if __name__ == '__main__':
         stop = time()
         time_elapsed = stop - start
         print("Completed in {} seconds".format(time_elapsed))
-
 
 
